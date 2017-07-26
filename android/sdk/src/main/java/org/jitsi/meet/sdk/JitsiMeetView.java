@@ -232,22 +232,14 @@ public class JitsiMeetView extends FrameLayout {
         loadURLString(url == null ? null : url.toString());
     }
 
-    /**
-     * Loads a specific URL {@link String} which may identify a conference to
-     * join. If the specified URL {@code String} is {@code null}, the Welcome
-     * page is displayed instead.
-     *
-     * @param urlString - The URL {@code String} to load which may identify a
-     * conference to join.
-     */
-    public void loadURLString(@Nullable String urlString) {
+    public void loadURLAlternative(@Nullable Bundle urlAlternative) {
         Bundle props = new Bundle();
 
         // externalAPIScope
         props.putString("externalAPIScope", externalAPIScope);
         // url
-        if (urlString != null) {
-            props.putString("url", urlString);
+        if (urlAlternative != null) {
+            props.putBundle("url", urlAlternative);
         }
         // welcomePageEnabled
         props.putBoolean("welcomePageEnabled", welcomePageEnabled);
@@ -260,10 +252,29 @@ public class JitsiMeetView extends FrameLayout {
         }
 
         reactRootView = new ReactRootView(getContext());
-        reactRootView
-            .startReactApplication(reactInstanceManager, "App", props);
+        reactRootView.startReactApplication(reactInstanceManager, "App", props);
         reactRootView.setBackgroundColor(BACKGROUND_COLOR);
         addView(reactRootView);
+    }
+
+    /**
+     * Loads a specific URL {@link String} which may identify a conference to
+     * join. If the specified URL {@code String} is {@code null}, the Welcome
+     * page is displayed instead.
+     *
+     * @param urlString - The URL {@code String} to load which may identify a
+     * conference to join.
+     */
+    public void loadURLString(@Nullable String urlString) {
+        Bundle urlAlternative;
+
+        if (urlString == null) {
+            urlAlternative = null;
+        } else {
+            urlAlternative = new Bundle();
+            urlAlternative.putString("url", urlString);
+        }
+        loadURLAlternative(urlAlternative);
     }
 
     /**

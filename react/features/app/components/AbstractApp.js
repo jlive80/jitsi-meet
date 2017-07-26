@@ -391,12 +391,54 @@ export class AbstractApp extends Component {
     /**
      * Navigates this AbstractApp to (i.e. opens) a specific URL.
      *
-     * @param {string} url - The URL to which to navigate this AbstractApp (i.e.
-     * the URL to open).
+     * @param {string} urlOrStringOrAlternative - The URL to which to navigate
+     * this AbstractApp (i.e. the URL to open).
      * @protected
      * @returns {void}
      */
-    _openURL(url) {
+    _openURL(urlOrStringOrAlternative) {
+        let url;
+
+        switch (typeof urlOrStringOrAlternative) {
+        case 'object':
+            if (urlOrStringOrAlternative) {
+                if (urlOrStringOrAlternative instanceof URL) {
+                    // URL
+                    url = urlOrStringOrAlternative.href;
+                } else {
+                    // URL alternative
+
+                    // The object "URL alternative" may pretty much be the
+                    // object passed to Web's JitsiMeetExternalAPI. It is
+                    // basically an object which can be translated to a full or
+                    // partial URL. Partial is allowed because of defaultURL
+                    // like today's url may be partial.
+
+                    // It may have a property domain unlike JitsiMeetExternalAPI
+                    // because I don't want a separate method argument which is
+                    // optional on mobile anyway (because of defaultURL).
+
+                    // It may have an optional property url which may get
+                    // augmented by other properties such as configOverwrite,
+                    // jwt, etc.
+
+                    // Adding properties in the future does not require Java and
+                    // Objective-C source code modifications, only the
+                    // JavaScript source code needs to handle the new properties
+                    // in a platform-agnostic manner.
+
+                    url = urlOrStringOrAlternative.url;
+                }
+            }
+            break;
+
+        case 'string':
+            // URL string
+            url = urlOrStringOrAlternative;
+            break;
+        }
+        console.warn('url', url);
+
         this._getStore().dispatch(appNavigate(url));
     }
 }

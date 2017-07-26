@@ -188,22 +188,14 @@ static NSMapTable<NSString *, JitsiMeetView *> *views;
     [self loadURLString:(url ? url.absoluteString : nil)];
 }
 
-/**
- * Loads a specific URL {@link NSString} which may identify a conference to
- * join. If the specified URL {@code NSString} is {@code nil}, the Welcome page
- * is displayed instead.
- *
- * @param urlString - The URL {@code NSString} to load which may identify a
- * conference to join.
- */
-- (void)loadURLString:(NSString *)urlString {
+- (void)loadURLAlternative:(NSDictionary *)urlAlternative {
     NSMutableDictionary *props = [[NSMutableDictionary alloc] init];
 
     // externalAPIScope
     [props setObject:externalAPIScope forKey:@"externalAPIScope"];
     // url
-    if (urlString) {
-        [props setObject:urlString forKey:@"url"];
+    if (urlAlternative) {
+        [props setObject:urlAlternative forKey:@"url"];
     }
     // welcomePageEnabled
     [props setObject:@(self.welcomePageEnabled) forKey:@"welcomePageEnabled"];
@@ -222,6 +214,24 @@ static NSMapTable<NSString *, JitsiMeetView *> *views;
         // Update props with the new URL.
         rootView.appProperties = props;
     }
+}
+
+/**
+ * Loads a specific URL {@link NSString} which may identify a conference to
+ * join. If the specified URL {@code NSString} is {@code nil}, the Welcome page
+ * is displayed instead.
+ *
+ * @param urlString - The URL {@code NSString} to load which may identify a
+ * conference to join.
+ */
+- (void)loadURLString:(NSString *)urlString {
+    NSMutableDictionary *urlAlternative;
+
+    if (urlString) {
+        urlAlternative = [[NSMutableDictionary alloc] init];
+        [urlAlternative setObject:urlString forKey:@"url"];
+    }
+    [self loadURLAlternative:urlAlternative];
 }
 
 #pragma mark Private methods

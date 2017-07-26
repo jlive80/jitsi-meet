@@ -83,7 +83,14 @@ public class JitsiMeetActivity extends AppCompatActivity {
         // JitsiMeetView#setWelcomePageEnabled(boolean) must be invoked before
         // JitsiMeetView#loadURL(URL).
         view.setWelcomePageEnabled(welcomePageEnabled);
-        view.loadURL(null);
+
+        Bundle configOverwrite = new Bundle();
+        configOverwrite.putBoolean("startWithAudioMuted", true);
+        configOverwrite.putBoolean("startWithVideoMuted", false);
+        Bundle urlAlternative = new Bundle();
+        urlAlternative.putBundle("configOverwrite", configOverwrite);
+        urlAlternative.putString("url", "https://beta.meet.jit.si/HCVideoStandup");
+        view.loadURLAlternative(urlAlternative);
 
         setContentView(view);
     }

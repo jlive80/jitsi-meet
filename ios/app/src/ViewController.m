@@ -37,7 +37,13 @@
     // SDK at the time of this writing but it is clearer to be explicit
     // about what we want anyway.
     view.welcomePageEnabled = YES;
-    [view loadURL:nil];
+    [view loadURLAlternative:@{
+        @"url": @"https://beta.meet.jit.si/HCVideoStandup",
+        @"configOverwrite": @{
+            @"startWithAudioMuted": @YES,
+            @"startWithVideoMuted": @NO
+        }
+    }];
 }
 
 @end
